@@ -15,11 +15,11 @@ class SpiderCrawl:
         self.node = node
         self.nearest = NodeHeap(self.node, self.ksize)
         self.last_ids_crawled = []
-        log.info("creating spider with peers: %s", peers)
+        log.info("creando spider con pares: %s", peers)
         self.nearest.push(peers)
 
     async def _find(self, rpcmethod):
-        log.info("crawling network with nearest: %s", str(tuple(self.nearest)))
+        log.info("rastreando la red con los más cercanos: %s", str(tuple(self.nearest)))
         count = self.alpha
         if self.nearest.get_ids() == self.last_ids_crawled:
             count = len(self.nearest)
@@ -69,7 +69,9 @@ class ValueSpiderCrawl(SpiderCrawl):
         value_counts = Counter(values)
         if len(value_counts) != 1:
             log.warning(
-                "Got multiple values for key %i: %s", self.node.long_id, str(values)
+                "Se obtuvieron múltiples valores para la clave %i: %s",
+                self.node.long_id,
+                str(values),
             )
         value = value_counts.most_common(1)[0][0]
 

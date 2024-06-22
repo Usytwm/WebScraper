@@ -8,7 +8,7 @@ from network import Server
 async def run_server(address, port, log_level, bootstrap_nodes):
     # Configurar el nivel de logging
     logging.basicConfig(level=getattr(logging, log_level.upper()))
-
+    log = logging.getLogger(__name__)
     # Crear e iniciar el servidor Kademlia
     server = Server()
     await server.listen(port, address)

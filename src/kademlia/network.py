@@ -3,12 +3,12 @@ import pickle
 import asyncio
 import logging
 
-from protocol import KademliaProtocol
-from utils import digest
-from storage import ForgetfulStorage
-from node import Node
-from crawling import ValueSpiderCrawl
-from crawling import NodeSpiderCrawl
+from kademlia.protocol import KademliaProtocol
+from kademlia.utils import digest
+from kademlia.storage import ForgetfulStorage
+from kademlia.node import Node
+from kademlia.crawling import ValueSpiderCrawl
+from kademlia.crawling import NodeSpiderCrawl
 
 log = logging.getLogger(__name__)
 

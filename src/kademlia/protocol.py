@@ -6,7 +6,7 @@ from rpcudp.protocol import RPCProtocol
 
 from kademlia.node import Node
 from kademlia.routing import RoutingTable
-from kademlia.utils import digest
+from utils.utils import digest
 
 log = logging.getLogger(__name__)
 

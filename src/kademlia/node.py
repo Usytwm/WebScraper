@@ -1,20 +1,31 @@
 from operator import itemgetter
 import heapq
+from enum import Enum, auto
+
+
+class NodeType(Enum):
+    STORAGE = auto()
+    SCRAPER = auto()
 
 
 class Node:
-    def __init__(self, node_id, ip=None, port=None):
-        # Inicializa un nodo con su ID, IP y puerto
+    def __init__(self, node_id, ip=None, port=None, role: NodeType = NodeType.STORAGE):
+        # Inicializa un nodo con su ID, IP , puerto y su rol
         self.id = node_id
         self.ip = ip
         self.port = port
+        self.role = role
         self.long_id = int(node_id.hex(), 16)
 
-    def same_home_as(self, node):
+    def same_home_as(self, node: "Node"):
         # Verifica si este nodo está en la misma dirección IP y puerto que otro nodo
-        return self.ip == node.ip and self.port == node.port
+        return (
+            self.ip == node.ip
+            and self.port == node.port
+            and self.role.value == node.role.value
+        )
 
-    def distance_to(self, node):
+    def distance_to(self, node: "Node"):
         # Calcula la distancia a otro nodo usando XOR
         return self.long_id ^ node.long_id
 
@@ -25,11 +36,11 @@ class Node:
         return repr([self.long_id, self.ip, self.port])
 
     def __str__(self):
-        return "%s:%s" % (self.ip, str(self.port))
+        return f"{self.ip}:{self.port} - Role: {self.role.name}"
 
 
 class NodeHeap:
-    def __init__(self, node, maxsize):
+    def __init__(self, node: Node, maxsize):
         # Inicializa un heap de nodos con un tamaño máximo
         self.node = node
         self.heap = []
@@ -62,7 +73,7 @@ class NodeHeap:
         # Devuelve los IDs de los nodos en el heap
         return [n.id for n in self]
 
-    def mark_contacted(self, node):
+    def mark_contacted(self, node: Node):
         # Marca un nodo como contactado
         self.contacted.add(node.id)
 
@@ -87,7 +98,7 @@ class NodeHeap:
         nodes = heapq.nsmallest(self.maxsize, self.heap)
         return iter(map(itemgetter(1), nodes))
 
-    def __contains__(self, node):
+    def __contains__(self, node: Node):
         for _, other in self.heap:
             if node.id == other.id:
                 return True

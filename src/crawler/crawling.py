@@ -2,7 +2,7 @@ from collections import Counter
 import logging
 
 from kademlia.node import Node, NodeHeap
-from kademlia.utils import gather_dict
+from utils.utils import gather_dict
 
 log = logging.getLogger(__name__)
 

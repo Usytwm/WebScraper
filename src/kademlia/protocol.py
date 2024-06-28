@@ -4,9 +4,9 @@ import logging
 
 from rpcudp.protocol import RPCProtocol
 
-from node import Node
-from routing import RoutingTable
-from utils import digest
+from kademlia.node import Node
+from kademlia.routing import RoutingTable
+from utils.utils import digest
 
 log = logging.getLogger(__name__)
 

@@ -3,12 +3,12 @@ import pickle
 import asyncio
 import logging
 
-from protocol import KademliaProtocol
-from utils import digest
-from storage import ForgetfulStorage
-from node import Node
-from crawling import ValueSpiderCrawl
-from crawling import NodeSpiderCrawl
+from kademlia.protocol import KademliaProtocol
+from utils.utils import digest
+from services.storage import ForgetfulStorage
+from kademlia.node import Node
+from crawler.crawling import ValueSpiderCrawl
+from crawler.crawling import NodeSpiderCrawl
 
 log = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 class Server:
     protocol_class = KademliaProtocol
 
-    def __init__(self, ksize=20, alpha=3, node_id=None, storage=None):
+    def __init__(self, ksize=20, alpha=3, node_id=None, storage=None, is_client=False):
         # Inicializa el servidor con ksize, alpha, ID de nodo y almacenamiento opcional
         self.ksize = ksize
         self.alpha = alpha
@@ -26,6 +26,7 @@ class Server:
         self.protocol = None
         self.refresh_loop = None
         self.save_state_loop = None
+        self.is_client = is_client
 
     def stop(self):
         # Detiene el servidor y cancela los loops de refresco y guardado de estado
@@ -44,6 +45,7 @@ class Server:
 
     async def listen(self, port, interface="0.0.0.0"):
         # Inicia el servidor en la interfaz y puerto especificados
+        self.node = Node(self.node.id, interface, port)
         loop = asyncio.get_event_loop()
         listen = loop.create_datagram_endpoint(
             self._create_protocol, local_addr=(interface, port)
@@ -57,7 +59,7 @@ class Server:
         log.debug("Refreshing routing table")
         asyncio.ensure_future(self._refresh_table())
         loop = asyncio.get_event_loop()
-        self.refresh_loop = loop.call_later(3600, self.refresh_table)
+        self.refresh_loop = loop.call_later(30, self.refresh_table)
 
     async def _refresh_table(self):
         # Actualiza la tabla de enrutamiento buscando nodos refrescados
